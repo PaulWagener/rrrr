@@ -28,8 +28,8 @@ struct stop {
  */
 typedef struct journey_pattern journey_pattern_t;
 struct journey_pattern {
-    uint32_t vehicle_journey_offset;
     uint32_t journey_pattern_point_offset;
+    uint32_t vehicle_journey_offset;
     uint16_t n_stops;
     uint16_t n_vjs;
     rtime_t  min_time;
@@ -141,7 +141,6 @@ struct tdata {
     stop_t *stops;
     uint8_t *stop_attributes;
     journey_pattern_t *journey_patterns;
-    journey_pattern_meta_t *journey_patterns_meta;
     spidx_t *journey_pattern_points;
     uint8_t  *journey_pattern_point_attributes;
     stoptime_t *stop_times;
@@ -152,6 +151,7 @@ struct tdata {
     /* optional data:
      * NULL pointer means it is not available */
     latlon_t *stop_coords;
+    journey_pattern_meta_t *journey_patterns_meta;
     uint32_t platformcodes_width;
     char *platformcodes;
     char *stop_names;
