@@ -52,7 +52,7 @@ const char *tdata_vehicle_journey_id_for_index(tdata_t *td, uint32_t vj_index) {
 }
 
 const char *tdata_vehicle_journey_id_for_jp_vj_index(tdata_t *td, uint32_t jp_index, uint32_t vj_index) {
-    return td->vj_ids + (td->vj_ids_width * (td->journey_patterns[jp_index].vj_ids_offset + vj_index));
+    return td->vj_ids + (td->vj_ids_width * (td->journey_patterns_meta[jp_index].vj_ids_offset + vj_index));
 }
 
 const char *tdata_agency_id_for_index(tdata_t *td, uint32_t agency_index) {
@@ -134,29 +134,29 @@ uint32_t tdata_journey_pattern_idx_by_line_id(tdata_t *td, char *line_id, uint32
 #define tdata_journey_pattern_idx_by_line_id(td, line_id) tdata_journey_pattern_idx_by_line_id(td, jp_index, 0)
 
 const char *tdata_vehicle_journey_ids_in_journey_pattern(tdata_t *td, uint32_t jp_index) {
-    journey_pattern_t journey_pattern = (td->journey_patterns)[jp_index];
-    uint32_t char_offset = journey_pattern.vj_ids_offset * td->vj_ids_width;
+    journey_pattern_meta_t journey_pattern_meta = (td->journey_patterns_meta)[jp_index];
+    uint32_t char_offset = journey_pattern_meta.vj_ids_offset * td->vj_ids_width;
     return td->vj_ids + char_offset;
 }
 
 calendar_t *tdata_vj_masks_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
-    journey_pattern_t journey_pattern = (td->journey_patterns)[jp_index];
-    return td->vj_active + journey_pattern.vj_ids_offset;
+    journey_pattern_meta_t journey_pattern_meta = (td->journey_patterns_meta)[jp_index];
+    return td->vj_active + journey_pattern_meta.vj_ids_offset;
 }
 
 const char *tdata_headsign_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
     if (jp_index == NONE) return "NONE";
-    return td->headsigns + (td->journey_patterns)[jp_index].headsign_offset;
+    return td->headsigns + (td->journey_patterns_meta)[jp_index].headsign_offset;
 }
 
 const char *tdata_line_code_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
     if (jp_index == NONE) return "NONE";
-    return td->line_codes + (td->line_codes_width * (td->journey_patterns)[jp_index].line_code_index);
+    return td->line_codes + (td->line_codes_width * (td->journey_patterns_meta)[jp_index].line_code_index);
 }
 
 const char *tdata_productcategory_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
     if (jp_index == NONE) return "NONE";
-    return td->productcategories + (td->productcategories_width * (td->journey_patterns)[jp_index].productcategory_index);
+    return td->productcategories + (td->productcategories_width * (td->journey_patterns_meta)[jp_index].productcategory_index);
 }
 
 uint32_t tdata_agencyidx_by_agency_name(tdata_t *td, char* agency_name, uint32_t agency_index_offset) {
@@ -174,17 +174,17 @@ uint32_t tdata_agencyidx_by_agency_name(tdata_t *td, char* agency_name, uint32_t
 
 const char *tdata_agency_id_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
     if (jp_index == NONE) return "NONE";
-    return td->agency_ids + (td->agency_ids_width * (td->journey_patterns)[jp_index].agency_index);
+    return td->agency_ids + (td->agency_ids_width * (td->journey_patterns_meta)[jp_index].agency_index);
 }
 
 const char *tdata_agency_name_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
     if (jp_index == NONE) return "NONE";
-    return td->agency_names + (td->agency_names_width * (td->journey_patterns)[jp_index].agency_index);
+    return td->agency_names + (td->agency_names_width * (td->journey_patterns_meta)[jp_index].agency_index);
 }
 
 const char *tdata_agency_url_for_journey_pattern(tdata_t *td, uint32_t jp_index) {
     if (jp_index == NONE) return "NONE";
-    return td->agency_urls + (td->agency_urls_width * (td->journey_patterns)[jp_index].agency_index);
+    return td->agency_urls + (td->agency_urls_width * (td->journey_patterns_meta)[jp_index].agency_index);
 }
 
 bool tdata_load(tdata_t *td, char *filename) {
@@ -236,11 +236,11 @@ uint32_t tdata_journey_patterns_for_stop(tdata_t *td, spidx_t stop_index, uint32
 }
 
 stoptime_t *tdata_timedemand_type(tdata_t *td, uint32_t jp_index, uint32_t vj_index) {
-    return td->stop_times + td->vjs[td->journey_patterns[jp_index].vj_ids_offset + vj_index].stop_times_offset;
+    return td->stop_times + td->vjs[td->journey_patterns_meta[jp_index].vj_ids_offset + vj_index].stop_times_offset;
 }
 
 vehicle_journey_t *tdata_vehicle_journeys_in_journey_pattern(tdata_t *td, uint32_t jp_index) {
-    return td->vjs + td->journey_patterns[jp_index].vj_ids_offset;
+    return td->vjs + td->journey_patterns_meta[jp_index].vj_ids_offset;
 }
 
 const char *tdata_stop_name_for_index(tdata_t *td, spidx_t stop_index) {
@@ -292,6 +292,7 @@ void tdata_dump_journey_pattern(tdata_t *td, uint32_t jp_index, uint32_t vj_inde
     uint32_t ti;
     spidx_t si;
     journey_pattern_t jp = td->journey_patterns[jp_index];
+    journey_pattern_meta_t jp_meta = td->journey_patterns_meta[jp_index];
     printf("\njourney_pattern details for %s %s %s '%s %s' [%d] (n_stops %d, n_vjs %d)\n"
            "vjid, stop sequence, stop name (index), departures  \n",
         tdata_agency_name_for_journey_pattern(td, jp_index),
@@ -309,20 +310,20 @@ void tdata_dump_journey_pattern(tdata_t *td, uint32_t jp_index, uint32_t vj_inde
         /* TODO should this really be a 2D array ?
         stoptime_t (*times)[jp.n_stops] = (void*) tdata_timedemand_type(td, jp_index, ti); */
 
-        printf("%s\n", tdata_vehicle_journey_id_for_index(td, jp.vj_ids_offset + ti));
+        printf("%s\n", tdata_vehicle_journey_id_for_index(td, jp_meta.vj_ids_offset + ti));
         for (si = 0; si < jp.n_stops; ++si) {
             const char *stop_id = tdata_stop_name_for_index (td, stops[si]);
             char arrival[13], departure[13];
             printf("%4d %35s [%06d] : %s %s",
                    si, stop_id, stops[si],
-                   btimetext(times[si].arrival + td->vjs[jp.vj_ids_offset + ti].begin_time + RTIME_ONE_DAY, arrival),
-                   btimetext(times[si].departure + td->vjs[jp.vj_ids_offset + ti].begin_time + RTIME_ONE_DAY, departure));
+                   btimetext(times[si].arrival + td->vjs[jp_meta.vj_ids_offset + ti].begin_time + RTIME_ONE_DAY, arrival),
+                   btimetext(times[si].departure + td->vjs[jp_meta.vj_ids_offset + ti].begin_time + RTIME_ONE_DAY, departure));
 
             #ifdef RRRR_FEATURE_REALTIME_EXPANDED
-            if (td->vj_stoptimes && td->vj_stoptimes[jp.vj_ids_offset + ti]) {
+            if (td->vj_stoptimes && td->vj_stoptimes[jp_meta.vj_ids_offset + ti]) {
                 printf (" %s %s",
-                        btimetext(td->vj_stoptimes[jp.vj_ids_offset + ti][si].arrival + RTIME_ONE_DAY, arrival),
-                        btimetext(td->vj_stoptimes[jp.vj_ids_offset + ti][si].departure + RTIME_ONE_DAY, departure));
+                        btimetext(td->vj_stoptimes[jp_meta.vj_ids_offset + ti][si].arrival + RTIME_ONE_DAY, arrival),
+                        btimetext(td->vj_stoptimes[jp_meta.vj_ids_offset + ti][si].departure + RTIME_ONE_DAY, departure));
             }
             #endif
 

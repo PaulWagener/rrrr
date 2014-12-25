@@ -208,8 +208,9 @@ static void flag_journey_patterns_for_stop(router_t *router, router_request_t *r
         /* & journey_pattern_active_flags seems to provide about 14% increase
          * in throughput
          */
+        /* TODO: remove attribute masking code to banning */
         if ((router->day_mask & jp_active_flags) &&
-            (req->mode & router->tdata->journey_patterns[journey_patterns[i_jp]].attributes) > 0) {
+            (req->mode & router->tdata->journey_patterns_meta[journey_patterns[i_jp]].attributes) > 0) {
            bitset_set (router->updated_journey_patterns, journey_patterns[i_jp]);
            #ifdef RRRR_INFO
            fprintf (stderr, "  journey_pattern running\n");

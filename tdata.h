@@ -29,16 +29,20 @@ struct stop {
 typedef struct journey_pattern journey_pattern_t;
 struct journey_pattern {
     uint32_t journey_pattern_point_offset;
-    uint32_t vj_ids_offset;
-    uint32_t headsign_offset;
     uint16_t n_stops;
     uint16_t n_vjs;
+    rtime_t  min_time;
+    rtime_t  max_time;
+};
+
+typedef struct journey_pattern_meta journey_pattern_meta_t;
+struct journey_pattern_meta {
+    uint32_t vj_ids_offset;
+    uint32_t headsign_offset;
     uint16_t attributes;
     uint16_t agency_index;
     uint16_t line_code_index;
     uint16_t productcategory_index;
-    rtime_t  min_time;
-    rtime_t  max_time;
 };
 
 /* An individual VehicleJourney,
@@ -112,6 +116,7 @@ struct tdata {
     uint32_t n_stop_attributes;
     uint32_t n_stop_coords;
     uint32_t n_journey_patterns;
+    uint32_t n_journey_patterns_meta;
     uint32_t n_journey_pattern_points;
     uint32_t n_journey_pattern_point_attributes;
     uint32_t n_stop_times;
@@ -136,6 +141,7 @@ struct tdata {
     stop_t *stops;
     uint8_t *stop_attributes;
     journey_pattern_t *journey_patterns;
+    journey_pattern_meta_t *journey_patterns_meta;
     spidx_t *journey_pattern_points;
     uint8_t  *journey_pattern_point_attributes;
     stoptime_t *stop_times;

@@ -95,6 +95,7 @@ bool tdata_io_v3_load(tdata_t *td, char *filename) {
     load_dynamic (fd, stop_attributes, uint8_t);
     load_dynamic (fd, stop_coords, latlon_t);
     load_dynamic (fd, journey_patterns, journey_pattern_t);
+    load_dynamic (fd, journey_patterns_meta, journey_pattern_meta_t);
     load_dynamic (fd, journey_pattern_points, spidx_t);
     load_dynamic (fd, journey_pattern_point_attributes, uint8_t);
     load_dynamic (fd, stop_times, stoptime_t);

@@ -12,6 +12,7 @@ struct tdata_header {
     uint32_t n_stop_attributes;
     uint32_t n_stop_coords;
     uint32_t n_journey_patterns;
+    uint32_t n_journey_patterns_meta;
     uint32_t n_journey_pattern_points;
     uint32_t n_journey_pattern_point_attributes;
     uint32_t n_stop_times;
@@ -41,6 +42,7 @@ struct tdata_header {
     uint32_t loc_stop_attributes;
     uint32_t loc_stop_coords;
     uint32_t loc_journey_patterns;
+    uint32_t loc_journey_patterns_meta;
     uint32_t loc_journey_pattern_points;
     uint32_t loc_journey_pattern_point_attributes;
     uint32_t loc_stop_times;
