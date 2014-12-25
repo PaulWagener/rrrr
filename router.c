@@ -232,7 +232,7 @@ static void flag_journey_patterns_for_stop(router_t *router, router_request_t *r
                              journey_patterns[i_jp], stop_index);
             #endif
             /* extra journey_patterns should only be applied on the current day */
-            if ((req->mode & router->tdata->journey_patterns[journey_patterns[i_jp]].attributes) > 0) {
+            if ((req->mode & router->tdata->journey_patterns_meta[journey_patterns[i_jp]].attributes) > 0) {
                 bitset_set (router->updated_journey_patterns, journey_patterns[i_jp]);
                 #ifdef RRRR_INFO
                 fprintf (stderr, "  journey_pattern running\n");
@@ -377,7 +377,7 @@ tdata_stoptime (tdata_t* tdata, serviceday_t *serviceday,
     if (serviceday->apply_realtime) {
 
         /* the expanded stoptimes can be found at the same row as the vehicle_journey */
-        vj_stoptimes = tdata->vj_stoptimes[tdata->journey_patterns[jp_index].vj_ids_offset + vj_offset];
+        vj_stoptimes = tdata->vj_stoptimes[tdata->journey_patterns[jp_index].vehicle_journey_offset + vj_offset];
 
         if (vj_stoptimes) {
             /* if the expanded stoptimes have been added,

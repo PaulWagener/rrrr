@@ -93,8 +93,7 @@ int tdata_validation_increasing_times(tdata_t *tdata) {
     int ret_nonincreasing = 0;
     for (jp_index = 0; jp_index < tdata->n_journey_patterns; ++jp_index) {
         journey_pattern_t jp = tdata->journey_patterns[jp_index];
-        journey_pattern_meta_t jp_meta = tdata->journey_patterns_meta[jp_index];
-        vehicle_journey_t *vjs = tdata->vjs + jp_meta.vj_ids_offset;
+        vehicle_journey_t *vjs = tdata->vjs + jp.vehicle_journey_offset;
 
         #ifdef RRRR_DEBUG
         /* statistics on errors, instead of early bail out */

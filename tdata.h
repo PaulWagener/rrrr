@@ -28,6 +28,7 @@ struct stop {
  */
 typedef struct journey_pattern journey_pattern_t;
 struct journey_pattern {
+    uint32_t vehicle_journey_offset;
     uint32_t journey_pattern_point_offset;
     uint16_t n_stops;
     uint16_t n_vjs;
@@ -37,7 +38,6 @@ struct journey_pattern {
 
 typedef struct journey_pattern_meta journey_pattern_meta_t;
 struct journey_pattern_meta {
-    uint32_t vj_ids_offset;
     uint32_t headsign_offset;
     uint16_t attributes;
     uint16_t agency_index;

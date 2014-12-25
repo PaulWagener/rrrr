@@ -134,7 +134,7 @@ static uint32_t tdata_new_journey_pattern(tdata_t *tdata, char *vj_ids,
     new = &tdata->journey_patterns[tdata->n_journey_patterns];
 
     new->journey_pattern_point_offset = journey_pattern_point_offset;
-    new->vj_ids_offset = vj_index;
+    new->vehicle_journey_offset = vj_index;
     new->headsign_offset = headsign_offset;
     new->n_stops = n_stops;
     new->n_vjs = n_vjs;
@@ -263,7 +263,7 @@ static void tdata_realtime_changed_journey_pattern(tdata_t *tdata, uint32_t vj_i
             #ifdef RRRR_DEBUG
             fprintf (stderr, "WARNING: this is changed vehicle_journey %s being CHANGED again!\n", vj_id_new);
             #endif
-            tdata->vj_stoptimes[jp_new->vj_ids_offset] = (stoptime_t *) realloc(tdata->vj_stoptimes[jp_new->vj_ids_offset], sizeof(stoptime_t) * n_stops);
+            tdata->vj_stoptimes[jp_new->vehicle_journey_offset] = (stoptime_t *) realloc(tdata->vj_stoptimes[jp_new->vehicle_journey_offset], sizeof(stoptime_t) * n_stops);
 
             /* Only initialises if the length of the list increased */
             for (i_stop_index = jp_new->n_stops;
@@ -299,7 +299,7 @@ static void tdata_realtime_changed_journey_pattern(tdata_t *tdata, uint32_t vj_i
          * NOTE: if we would have allocated multiple vehicle_journeys this
          * should be a for loop over n_vjs.
          */
-        vj_index = jp_new->vj_ids_offset;
+        vj_index = jp_new->vehicle_journey_offset;
 
         for (i_vj = 0; i_vj < 1; ++i_vj) {
             tdata->vjs[vj_index].vj_attributes = vj->vj_attributes;
@@ -309,7 +309,7 @@ static void tdata_realtime_changed_journey_pattern(tdata_t *tdata, uint32_t vj_i
         }
 
         /* Restore the first vj_index again */
-        vj_index = jp_new->vj_ids_offset;
+        vj_index = jp_new->vehicle_journey_offset;
     }
 
     tdata_apply_stop_time_update (tdata, jp_index, vj_index, rt_trip_update);
@@ -317,7 +317,7 @@ static void tdata_realtime_changed_journey_pattern(tdata_t *tdata, uint32_t vj_i
     /* being blissfully naive, a journey_pattern having only one vehicle_journey,
      * will have the same start and end time as its vehicle_journey
      */
-    jp_new->min_time = tdata->vj_stoptimes[jp_new->vj_ids_offset][0].arrival;
+    jp_new->min_time = tdata->vj_stoptimes[jp_new->vehicle_journey_offset][0].arrival;
     jp_new->max_time = tdata->vj_stoptimes[vj_index][jp_new->n_stops - 1].departure;
 
 }
@@ -441,7 +441,7 @@ bool tdata_alloc_expanded(tdata_t *td) {
     for (i_jp = 0; i_jp < td->n_journey_patterns; ++i_jp) {
         uint32_t i_vj;
         for (i_vj = 0; i_vj < td->journey_patterns[i_jp].n_vjs; ++i_vj) {
-            td->vjs_in_journey_pattern[td->journey_patterns[i_jp].vj_ids_offset + i_vj] =
+            td->vjs_in_journey_pattern[td->journey_patterns[i_jp].vehicle_journey_offset + i_vj] =
                     i_jp;
         }
     }
