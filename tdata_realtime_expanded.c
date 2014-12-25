@@ -189,6 +189,7 @@ static uint32_t tdata_new_journey_pattern(tdata_t *tdata, char *vj_ids,
     tdata->n_vj_ids += n_vjs;
     tdata->n_vj_active += n_vjs;
     tdata->n_journey_pattern_active++;
+    tdata->n_journey_patterns_meta++;
 
     return tdata->n_journey_patterns++;
 }
