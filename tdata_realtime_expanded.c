@@ -125,6 +125,8 @@ static uint32_t tdata_new_journey_pattern(tdata_t *tdata, char *vj_ids,
         uint16_t agency_index, uint16_t line_code_index,
         uint16_t productcategory_index) {
     journey_pattern_t *new;
+    journey_pattern_meta_t *new_meta;
+
     uint32_t journey_pattern_point_offset = tdata->n_journey_pattern_points;
     uint32_t stop_times_offset = tdata->n_stop_times;
     uint32_t vj_index = tdata->n_vjs;
@@ -132,16 +134,16 @@ static uint32_t tdata_new_journey_pattern(tdata_t *tdata, char *vj_ids,
     uint16_t i_vj;
 
     new = &tdata->journey_patterns[tdata->n_journey_patterns];
-
+    new_meta = &tdata->journey_patterns_meta[tdata->n_journey_patterns_meta];
     new->journey_pattern_point_offset = journey_pattern_point_offset;
     new->vehicle_journey_offset = vj_index;
-    new->headsign_offset = headsign_offset;
+    new_meta->headsign_offset = headsign_offset;
     new->n_stops = n_stops;
     new->n_vjs = n_vjs;
-    new->attributes = attributes;
-    new->agency_index = agency_index;
-    new->productcategory_index = productcategory_index;
-    new->line_code_index = line_code_index;
+    new_meta->attributes = attributes;
+    new_meta->agency_index = agency_index;
+    new_meta->productcategory_index = productcategory_index;
+    new_meta->line_code_index = line_code_index;
 
     tdata->vjs[vj_index].stop_times_offset = stop_times_offset;
 
@@ -276,7 +278,7 @@ static void tdata_realtime_changed_journey_pattern(tdata_t *tdata, uint32_t vj_i
     }
 
     if (jp_new == NULL) {
-        journey_pattern_t *jp = tdata->journey_patterns + tdata->vjs_in_journey_pattern[vj_index];
+        journey_pattern_meta_t *jp_meta = tdata->journey_patterns_meta + tdata->vjs_in_journey_pattern[vj_index];
         vehicle_journey_t  *vj = tdata->vjs + vj_index;
         uint16_t i_vj;
 
@@ -287,11 +289,11 @@ static void tdata_realtime_changed_journey_pattern(tdata_t *tdata, uint32_t vj_i
          * having one single vj, which is the modification.
          */
         jp_index = tdata_new_journey_pattern(tdata, vj_id_new, n_stops, 1,
-                jp->attributes,
-                jp->headsign_offset,
-                jp->agency_index,
-                jp->line_code_index,
-                jp->productcategory_index);
+                jp_meta->attributes,
+                jp_meta->headsign_offset,
+                jp_meta->agency_index,
+                jp_meta->line_code_index,
+                jp_meta->productcategory_index);
 
         jp_new = &(tdata->journey_patterns[jp_index]);
 
